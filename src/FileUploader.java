@@ -1,5 +1,9 @@
 import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class FileUploader {
     public static void main(String[] args) {
@@ -13,8 +17,11 @@ public class FileUploader {
             OutputStream outputStream = socket.getOutputStream();
             FileInputStream fileInputStream = new FileInputStream(filePath);
 
-            PrintWriter writer = new PrintWriter(new OutputStreamWriter(outputStream, "UTF-8"), true);
+            PrintWriter writer = new PrintWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8), true);
             String fileName = new File(filePath).getName();
+
+            Path path = Paths.get(filePath);
+            long bytes = Files.size(path);
 
             // Создаем HTTP-заголовки
             writer.println("POST /upload.php HTTP/1.0");
@@ -27,6 +34,7 @@ public class FileUploader {
             writer.println("--" + boundary);
             writer.println("Content-Disposition: form-data; name=\"file\"; filename=\"" + fileName + "\"");
             writer.println("Content-Type: image/jpeg");
+            writer.println("Content-Length: " + bytes);
             writer.println();
 
             writer.flush();
@@ -37,6 +45,7 @@ public class FileUploader {
             while ((bytesRead = fileInputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
             }
+
             outputStream.flush();
             fileInputStream.close();
 
