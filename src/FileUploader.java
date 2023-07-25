@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 
 public class FileUploader {
     public static void main(String[] args) {
-        String filePath = "src/cat.jpg";
+        String filePath = "src/mpostnikov.jpg";
         String boundary = "===mpostnikov===";
         String serverAddress = "194.99.21.219";
         int port = 80;
